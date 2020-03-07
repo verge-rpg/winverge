@@ -6,6 +6,8 @@
 #include "mwav.h"
 #include "mdsfx.h"
 
+#include <direct.h>
+
 #include <vector>
 
 class SongCacheEntry:public CacheEntry
@@ -198,7 +200,16 @@ void InitSound()
     char i;
 
     int numfx = 0;
-    if(!(f = fopen(fname, "r"))) err("Could not open sound effect index file.");
+    f = fopen(fname, "r");
+    if(!f)
+    {
+      //try going into the content dir. i know its crappy
+      _chdir(".\\content");
+      f = fopen(fname, "r");
+      if(!f)
+        err("Could not open sound effect index file.");
+    }
+
     fscanf(f, "%s", strbuf);
     numfx = atoi(strbuf);
 

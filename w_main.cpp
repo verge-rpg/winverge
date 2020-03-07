@@ -4,6 +4,7 @@
 
 #include "resource.h"
 
+
 /*
  fixed saveload window (which is a total piece-of-shit-code),
  fix ForceEquip and 
