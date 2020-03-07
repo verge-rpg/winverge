@@ -8,6 +8,8 @@
 #include "ddraw.h"
 #include "pcp.h"
 
+#include <direct.h>
+
 /************************** data **************************/
 
 byte *scr, *scr_last_hicolor;
@@ -558,7 +560,12 @@ void LoadFont()
 
 	/* Load small font */
 	if (!(f = fopen("SMALL.FNT","rb")))
-		err("FATAL ERROR: Could not open SMALL.FNT");
+	{
+		//try going into the content dir. i know its crappy
+		_chdir(".\\content");
+		if (!(f = fopen("SMALL.FNT","rb")))
+			err("FATAL ERROR: Could not open SMALL.FNT");
+	}
 	fread(fnt, 63, 95, f);
 	fclose(f);
 
