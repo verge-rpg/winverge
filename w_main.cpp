@@ -14,7 +14,7 @@
 
 // ***************************** Data *****************************
 
-char Foreground=0;
+char Foreground=1;
 char WinCursorOn=1;
 HWND hMainWnd;
 HINSTANCE hMainInst;
@@ -389,21 +389,6 @@ LRESULT APIENTRY WndProc(HWND hWnd, UINT message,WPARAM wParam, LPARAM lParam)
 {
 	switch(message)
 	{
-		case WM_ACTIVATE:
-			if(LOWORD(wParam) == WA_INACTIVE)
-			{
-				Foreground = 0;
-			}
-			else Foreground = 1;
-			break;
-		case WM_ACTIVATEAPP:
-			if((BOOL)wParam == 0)
-			{
-				Foreground = 0;
-			}
-			else Foreground = 1;
-			break;
-
 		case WM_TIMER:
 			{
 				RECT r;
