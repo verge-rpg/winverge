@@ -319,7 +319,7 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE zwhocares, LPSTR isuredon
 	AdjustWindowRect(&r,WS_OVERLAPPEDWINDOW,FALSE);
 	char tmp[200];
 	sprintf(tmp, "winverge 2020 msvc %d", _MSC_VER);
-	hMainWnd=CreateWindowEx((int) NULL,"verge main window type",tmp,WS_OVERLAPPEDWINDOW | WS_VISIBLE,0,0,r.right-r.left,r.bottom-r.top,NULL,NULL,hMainInst,NULL);
+	hMainWnd=CreateWindowEx((int) NULL,"verge main window type",tmp,WS_OVERLAPPEDWINDOW | WS_VISIBLE,CW_USEDEFAULT,CW_USEDEFAULT,r.right-r.left,r.bottom-r.top,NULL,NULL,hMainInst,NULL);
 	ShowWindow(hMainWnd,SW_NORMAL);
 	UpdateWindow(hMainWnd);
 	hSubMenu=GetSubMenu(hMenu,0);
