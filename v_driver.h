@@ -1,3 +1,5 @@
+#pragma once
+
 #define VID_NONE      0
 #define VID_8BPP_DX   1
 

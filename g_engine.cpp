@@ -165,7 +165,7 @@ void LoadCHRList()
 		}
 }
 
-void load_map(char *fname)
+void load_map(const char *fname)
 {
 	byte b;
 	int i;
@@ -583,7 +583,7 @@ void CreateSaveImage(byte *buf)
         else memset(buf+2048,0,512);
 }
 
-void SaveGame(char *fn)
+void SaveGame(const char *fn)
 {
 	FILE *f;
 	byte cz, temp[2560];
@@ -612,7 +612,7 @@ void SaveGame(char *fn)
 	fclose(f);
 }
 
-void startmap(char *fname)
+void startmap(const char *fname)
 {
 	if (qabort) return;
 

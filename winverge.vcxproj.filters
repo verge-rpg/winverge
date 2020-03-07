@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="a_cache.h" />
+    <ClInclude Include="a_err.h" />
+    <ClInclude Include="a_string.h" />
+    <ClInclude Include="afxres.h" />
+    <ClInclude Include="w_main.h" />
+    <ClInclude Include="w_sound.h" />
+    <ClInclude Include="uniform.h" />
+    <ClInclude Include="unisamp.h" />
+    <ClInclude Include="g_pcx.h" />
+    <ClInclude Include="g_render.h" />
+    <ClInclude Include="g_vc.h" />
+    <ClInclude Include="g_vclib.h" />
+    <ClInclude Include="g_vga.h" />
+    <ClInclude Include="g_engine.h" />
+    <ClInclude Include="g_menu.h" />
+    <ClInclude Include="mikmod2002\mmio\include\mminline.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mmio\include\mmio.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mmio\include\mmtypes.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mmio\include\log.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mmio\include\mmconfig.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mmio\include\mmforbid.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mmio\include\mmgetopt.h">
+      <Filter>mikmod2002\mmio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\mpforbid.h">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\loaders\itshare.h">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\virtch\ssmix.h">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\virtch\stdmix.h">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\virtch\vchcrap.h">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\virtch\wrap8.h">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\virtch\wrap16.h">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClInclude>
+    <ClInclude Include="mikmod2002\mikmod\src\virtch\resfilter\resshare.h">
+      <Filter>mikmod2002\mikmod\src\virtch\resfilter</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="a_cache.cpp" />
+    <ClCompile Include="a_string.cpp" />
+    <ClCompile Include="a_err.cpp" />
+    <ClCompile Include="w_dinput.cpp" />
+    <ClCompile Include="w_main.cpp" />
+    <ClCompile Include="w_sound.cpp" />
+    <ClCompile Include="w_timer.cpp" />
+    <ClCompile Include="g_render.cpp" />
+    <ClCompile Include="g_vc.cpp" />
+    <ClCompile Include="g_vclib.cpp" />
+    <ClCompile Include="g_vga.cpp" />
+    <ClCompile Include="g_engine.cpp" />
+    <ClCompile Include="g_menu.cpp" />
+    <ClCompile Include="g_pcx.cpp" />
+    <ClCompile Include="mikmod2002\mmio\src\mmalloc.c">
+      <Filter>mikmod2002\mmio\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mmio\src\mmconfig.c">
+      <Filter>mikmod2002\mmio\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mmio\src\mmcopy.c">
+      <Filter>mikmod2002\mmio\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mmio\src\mmerror.c">
+      <Filter>mikmod2002\mmio\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mmio\src\mmio.c">
+      <Filter>mikmod2002\mmio\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mmio\src\log.c">
+      <Filter>mikmod2002\mmio\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mplayer.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\munitrk.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mwav.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\npertab.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\sloader.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\snglen.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\unimod.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\voiceset.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mdreg.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mdriver.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mdsfx.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mloader.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\mlreg.c">
+      <Filter>mikmod2002\mikmod\src</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\drivers\drv_nos.c">
+      <Filter>mikmod2002\mikmod\src\drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\drivers\win32\drv_dx6.c">
+      <Filter>mikmod2002\mikmod\src\drivers\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\loaders\Load_mod.c">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\loaders\Load_s3m.c">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\loaders\Load_stm.c">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\loaders\Load_xm.c">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\loaders\S3m_it.c">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\loaders\Load_it.c">
+      <Filter>mikmod2002\mikmod\src\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\nc8.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\nc8ss.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\nc16.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\nc16ss.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\placebo.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\regmix_ss.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\vc8.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\vc8ss.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\vc16.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\vc16ss.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\wrap8.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\wrap16.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\virtch.c">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\resfilter\16.c">
+      <Filter>mikmod2002\mikmod\src\virtch\resfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mikmod\src\virtch\resfilter\8.c">
+      <Filter>mikmod2002\mikmod\src\virtch\resfilter</Filter>
+    </ClCompile>
+    <ClCompile Include="mikmod2002\mmio\src\win32\mmforbid.c">
+      <Filter>mikmod2002\mmio\src\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="mikmod2002">
+      <UniqueIdentifier>{52d21dfc-d34b-45ec-ae83-67cc5f6c2df2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mmio">
+      <UniqueIdentifier>{dd34f3ca-f654-4f8e-8812-8444d591b593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod">
+      <UniqueIdentifier>{bff6d948-7aa2-4202-ae17-d032bad0c26d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mmio\src">
+      <UniqueIdentifier>{d41cce04-d8c5-4d58-b3e2-92282d56b3f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mmio\include">
+      <UniqueIdentifier>{f9ed9840-c96c-422f-b0f5-5b708af932c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod\src">
+      <UniqueIdentifier>{35cb2e69-6b72-4b70-ae26-13b8e4e45779}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod\src\drivers">
+      <UniqueIdentifier>{35f5e227-35c1-4754-ba8c-bdd269a8140e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod\src\drivers\win32">
+      <UniqueIdentifier>{22b93ddc-6c98-416f-b601-156e7adb2b37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod\src\loaders">
+      <UniqueIdentifier>{11cf4a92-3658-47d4-8b6c-f2b34d34f6c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod\src\virtch">
+      <UniqueIdentifier>{bdbd040f-49f2-4c94-81cf-defee33cb15b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mikmod\src\virtch\resfilter">
+      <UniqueIdentifier>{a6b7b0da-64ce-49fb-8756-f251bcd4715f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mikmod2002\mmio\src\win32">
+      <UniqueIdentifier>{552a7524-d9ac-433e-b19b-f3c3156ccaf1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mikmod2002\mikmod\src\virtch\resample.S">
+      <Filter>mikmod2002\mikmod\src\virtch</Filter>
+    </None>
+  </ItemGroup>
+</Project>

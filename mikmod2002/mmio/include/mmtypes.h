@@ -15,11 +15,22 @@
 #ifndef TDEFS_H
 #define TDEFS_H
 
+#ifdef __GNUC__
+#ifndef __cdecl
+#define __cdecl
+#endif
+#endif
+
+#ifdef __WATCOMC__
+#define   inline
+#endif
+
+
 // THE WARNINGS!  THEY ARE FINALLY GONE!!!
-// Visual C, the boon devil of my existance, conceeds defeat with the discovery
+// Visual C, the boon devil of my existence, conceeds defeat with the discovery
 // of the #pragma warning command.  Begone, stupid warnings!  I won't even go
 // in the details how VC's warning level system is ass-backwards already.  Just
-// be glad mikmod no longer streams out thousands of warnings.
+// be glad mikmod no longer streams out thousands of innane warnings.
 
 #ifdef _MSC_VER
 
@@ -27,10 +38,33 @@
 // Move the semi-useful warning "(small value) assigned to (big val), Conversion Supplied"
 //   (useful because that conversion is kinda slow on Pentiums, usually requiring a movsx)
 
-#pragma warning( disable : 4244 )
-#pragma warning( 4 : 4761 )
-#endif
+#pragma warning( disable : 4244 )       // (big val) converted to (small val). Possible loss of data
+#pragma warning( disable : 4305 )       // truncation from 'const double ' to 'float '
+#pragma warning( 4 : 4761 )             // (small value) assigned to (big val), Conversion Supplied
 
+#ifndef _DEBUG
+// release optimizations
+// /Og (global optimizations), /Os (favor small code), /Oy (no frame pointers)
+#pragma optimize("gy",on)
+#pragma comment(linker,"/RELEASE")
+// set the 512-byte alignment .. cuts back on whitespace in output files (EXE/DLL/LIB)
+#pragma comment(linker,"/opt:nowin98")
+
+/*
+#define _mm_initdebugmem()
+
+#else
+
+#include <crtdbg.h>
+
+#define _mm_initdebugmem() \
+{   uint tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG); \
+    tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF; \
+    _CrtSetDbgFlag(tmpDbgFlag); \
+}
+*/
+#endif
+#endif
 
 // This included for future unicode support, or something.  Anything in
 // mikmod that is an actual character string uses this type.  Things that
@@ -41,7 +75,10 @@ typedef char            CHAR;
 #endif
 
 // finally got tired of typing in 'unsigned' all the time!
+// Already defined on my copy of Linux GCC. Seems to be
+// a BSD thing. [JEL]
 
+#ifdef WIN32
 #ifndef uint
 typedef unsigned int    uint;    // must be at least 16 bits!
 #endif
@@ -49,7 +86,7 @@ typedef unsigned int    uint;    // must be at least 16 bits!
 #ifndef ulong
 typedef unsigned long   ulong;   // must be at least 32 bits!
 #endif
-
+#endif
 
 #ifndef TRUE
 #define TRUE 1
@@ -57,6 +94,18 @@ typedef unsigned long   ulong;   // must be at least 32 bits!
 
 #ifndef FALSE
 #define FALSE 0
+#endif
+
+#ifndef true
+#define true 1
+#endif
+
+#ifndef false
+#define false 0
+#endif
+
+#ifndef DWORD
+typedef unsigned long DWORD;
 #endif
 
 // Strict datatypes.
@@ -79,7 +128,13 @@ typedef unsigned short  UWORD;          /* has to be 2 bytes unsigned */
 /* long is 8 bytes on dec alpha - RCA */
 typedef signed int      SLONG;          /* has to be 4 bytes signed */
 typedef unsigned int    ULONG;          /* has to be 4 bytes unsigned */
+
+#ifdef _cplusplus
+typedef bool            BOOL;           /* doesn't matter.. 0=FALSE, <>0 true */
+#else
 typedef int             BOOL;           /* doesn't matter.. 0=FALSE, <>0 true */
+typedef int             bool;
+#endif
 
 typedef unsigned long   INT64U;
 typedef long            INT64S;
@@ -93,6 +148,9 @@ typedef unsigned short  UWORD;          /* has to be 2 bytes unsigned */
 typedef signed long     SLONG;          /* has to be 4 bytes signed */
 typedef unsigned long   ULONG;          /* has to be 4 bytes unsigned */
 typedef int             BOOL;           /* doesn't matter.. 0=FALSE, <>0 true */
+#ifndef __cplusplus
+typedef int             bool;
+#endif
 
 #endif
 
@@ -115,6 +173,14 @@ typedef unsigned __int64 INT64U;
 #endif
 
 #elif __DJGPP__
+typedef long long          INT64S;
+typedef unsigned long long INT64U;
+
+#elif __BORLANDC__
+typedef __int64          INT64S;
+typedef unsigned __int64 INT64U;
+
+#elif __GNUC__
 typedef long long          INT64S;
 typedef unsigned long long INT64U;
 
@@ -153,21 +219,14 @@ typedef unsigned __int64 INT64U;
 #define interrupt 
 #endif
 
-// Struct : MMVOLUME
-//   Used by mdriver to communicate quadsound volumes between itself and the
-//   drivers in a fast, efficient, and clean manner.  You can use it too, if
-//   are elite and don't mind using structs for things.  Or you can just use
-//   'flvol, frvol, rlvol, rrvol' for everything like a dork!
+// we use memset instead of Windows-specific ZeroMemory because it is more
+// cross-platform friendly.
 
-typedef struct
-{   struct
-    {   int   left, right;
-    } front;
-    
-    struct
-    {   int   left, right;
-    } rear;
-} MMVOLUME;
+#define CLEAR_STRUCT(s)			memset(&(s),0,sizeof(s))
+
+#define _mmchr_numeric(x)       ( ((x) >= 0x30) && ((x) <= 0x39) )
+#define _mmchr_whitespace(x)    ( (x) && ((x <= 32) || (x == 255)) )
+#define _mmchr_notwhitespace(x) ( (x > 32) && (x != 255) )
 
 #endif
 

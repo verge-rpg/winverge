@@ -82,7 +82,7 @@ void InitPStats()
 	fclose(pdat);
 }
 
-void StartNewGame(char *startp)
+void StartNewGame(const char *startp)
 {
 	numchars=0;
 	InitPStats();
@@ -97,7 +97,7 @@ void StartNewGame(char *startp)
 	startmap(startp);
 }
 
-void LoadGame(char *fn)
+void LoadGame(const char *fn)
 {
 	FILE *f;
 	char i,b;
@@ -146,7 +146,7 @@ void ProcessEquipDat()
 	for (i=1; i<=a; i++)
 	{
 pl1:
-		fscanf(f,"%s",strbuf); strupr(strbuf);
+		fscanf(f,"%s",strbuf); _strupr(strbuf);
 		if (!strcmp(strbuf,"//")) { fgets(strbuf,99,f); goto pl1; }
 		if (!strcmp(strbuf,"ATK")) { fscanf(f,"%s",strbuf);
                                    equip[i].str=atoi(strbuf); goto pl1; }
@@ -404,7 +404,7 @@ LRESULT APIENTRY WndProc(HWND hWnd, UINT message,WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void vExit(char *msg)
+void vExit(const char *msg)
 {
 	DestroyWindow(hMainWnd);
 	if (vstrcmp(msg,""))
@@ -416,7 +416,7 @@ void vExit(char *msg)
 	exit(-1);
 }
 
-void ReadMouse(void)
+void ReadMouse()
 {
 	RECT dr;
 	POINT pt;

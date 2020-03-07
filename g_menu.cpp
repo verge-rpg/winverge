@@ -596,21 +596,21 @@ void PutCharBox(char a,char b, char c, char d, char e, char p)
     }
 }
 
-void PutMessageBox(char *str)
+void PutMessageBox(const char *str)
 {
 	tmenubox(118,20,330,38);
 	gotoxy(224-(strlen(str)*4),26);
 	printstring(str);
 }
 
-void PutItemName(char *str)
+void PutItemName(const char *str)
 {
 	tmenubox(118,40,330,58);
 	gotoxy(224-(strlen(str)*4),46);
 	printstring(str);
 }
 
-void PutItemDesc(char *str)
+void PutItemDesc(const char *str)
 {
 	tmenubox(118,60,330,78);
 	gotoxy(224-(strlen(str)*4),66);
@@ -999,8 +999,8 @@ drawloop:
 	PutBuySellBox(0);
 	PutGPBox();
 	PutMessageBox("Buy for who?");
-	PutItemName((char*) items[storeinv[ptr]].name);
-	PutItemDesc((char*) items[storeinv[ptr]].desc);
+	PutItemName((const char*) items[storeinv[ptr]].name);
+	PutItemDesc((const char*) items[storeinv[ptr]].desc);
 	PutBuyCharBox(ptr,bcs+1);
 	PutStoreInv();
 	PutEquipPreview(bcs,ptr);
@@ -1163,7 +1163,7 @@ void LoadSaveErase(char mode)
 	int i,j,r=0;
 	byte tbuf[2560],buf1[2560],buf2[2560],buf3[2560],buf4[2560];
 	byte rbuf[256];
-	byte *img,mpos,b;
+	byte *img=nullptr,mpos,b;
 	char mnu1[]="LOADGAME.MNU";
 	char mnu2[]="SAVEGAME.MNU";
 	char mnu3[]="DELGAME.MNU";

@@ -39,7 +39,7 @@ void InitErrorSystem(void)
    shutdown_top = 0;
 }
 
-void AddShutdownProc(void (*FuncPtr) (void), char *name)
+void AddShutdownProc(void (*FuncPtr) (void), const char *name)
 {
    ShutdownType *n;
 
@@ -50,7 +50,7 @@ void AddShutdownProc(void (*FuncPtr) (void), char *name)
    shutdown_top = n;
 }
 
-void err_Shutdown(void)
+void err_Shutdown()
 {
    ShutdownType *n;
 
@@ -62,7 +62,7 @@ void err_Shutdown(void)
    }
 }
 
-void err(char *s, ...)
+void err(const char *s, ...)
 {
   va_list argptr;
   char msg[256];
@@ -75,7 +75,7 @@ void err(char *s, ...)
   vExit(msg);
 }
 
-void Log(char *text, ...)
+void Log(const char *text, ...)
 {
    va_list argptr;
    char msg[256];

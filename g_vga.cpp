@@ -591,7 +591,7 @@ void gotoxy(int x, int y)
 	y1=y;
 }
 
-void printstring(char *str)
+void printstring(const char *str)
 {
 	int i = 0;
 	char c;
@@ -607,7 +607,7 @@ void printstring(char *str)
 	}
 }
 
-void VCprintstring(int xx, int yy, char *str)
+void VCprintstring(int xx, int yy, const char *str)
 {
 	int i;
 	char c;
@@ -623,7 +623,7 @@ mainloop:
 }
 
 
-void bigprintstring(char *str)
+void bigprintstring(const char *str)
 {
 	int i=0;
 	char c;
@@ -650,7 +650,7 @@ void dec_to_asciiz(int num, char *buf)
 	sprintf(buf, "%d", num);
 }
 
-void textwindow(char portrait, char *str1, char *str2, char *str3)
+void textwindow(char portrait, const char *str1, const char *str2, const char *str3)
 {
 	TCopySprite(20,114,32,32,speech+(portrait*1024));
 	putbox();

@@ -5,11 +5,11 @@ extern HINSTANCE hMainInst;
 #endif
 
 void StartupMenu();
-void StartNewGame(char*);
-void LoadGame(char *fn);
+void StartNewGame(const char*);
+void LoadGame(const char *fn);
 
 extern void ReadMouse(void);
 extern void HandleMessages(void);
-extern void vExit(char *str);
+extern void vExit(const char *str);
 
 

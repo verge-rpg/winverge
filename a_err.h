@@ -2,12 +2,12 @@
 #define ERR_H
 
 void InitErrorSystem(void);
-void AddShutdownProc(void (*FuncPtr) (void), char *name);
+void AddShutdownProc(void (*FuncPtr) (void), const char *name);
 void err_Shutdown(void);
-void err(char *s, ...);
-void Log(char *text, ...);
-void Logp(char *text, ...);
+void err(const char *s, ...);
+void Log(const char *text, ...);
+void Logp(const char *text, ...);
 void LogDone(void);
-char *va(char* format, ...);
+char *va(const char* format, ...);
 
 #endif

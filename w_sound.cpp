@@ -2,6 +2,7 @@
 #include "pcp.h"
 #include "mikmod.h"
 #include "mplayer.h"
+#include "unisamp.h"
 
 
 class SongCacheEntry:public CacheEntry
@@ -10,7 +11,7 @@ public:
     UNIMOD      *mf;
 
     SongCacheEntry(SongCacheEntry *list, const char *n)
-    {   name       = strdup(n);
+    {   name       = _strdup(n);
         next       = list;
         prev       = NULL;
         if(list) list->prev = this;
@@ -28,7 +29,7 @@ public:
     SAMPLE     *handle;
 
     SampleCacheEntry(SampleCacheEntry *list, const char *n)
-    {   name       = strdup(n);
+    {   name       = _strdup(n);
         next       = list;
         prev       = NULL;
         if(list) list->prev = this;
@@ -81,7 +82,7 @@ static bool Session;
 // ==============================
 
 static void ShutdownSound(void) { Mikmod_Exit(md); }
-static void errorhandler(int merrnum, CHAR *merrstr)
+static void errorhandler(int merrnum, const CHAR *merrstr)
 {
     // the addition of a dialog box on certain error types might be a
     // useful 'user-friendly' idea.  Something to think about later...
@@ -99,7 +100,8 @@ static void killmodule(void)
     {    // see if our resource is cached -- if not, then unload the song.
         if(mp)
         {   Player_Stop(mp);
-		    Player_FreeSong(mp);
+		    //Player_FreeSong(mp);
+        Player_Free(mp);
             mp = NULL;
         }
         
@@ -147,7 +149,7 @@ void InitSound()
 
     CurCache.song = NULL; CurCache.sample = NULL;
 
-    printlog = Log; 
+    //printlog = Log; 
     Mikmod_RegisterErrorHandler(errorhandler);
 
     Mikmod_RegisterLoader(load_it);
@@ -164,7 +166,7 @@ void InitSound()
     // Notes:
     //  - We force dynamic sample support.  This is mostly a gesture of future expandability.
 
-    md = Mikmod_Init(22050, 60, NULL, MD_SURROUND, CPU_AUTODETECT, DMODE_16BITS | DMODE_INTERP | DMODE_NOCLICK | DMODE_SAMPLE_DYNAMIC);
+    md = Mikmod_Init(48000, 60, NULL, MD_STEREO, CPU_AUTODETECT, DMODE_16BITS | DMODE_INTERP | DMODE_NOCLICK | DMODE_SAMPLE_DYNAMIC);
 
     // Blackstar voiceset organization:
     // Notes:
@@ -402,9 +404,10 @@ SAMPLE *CacheSample(const char *si)
     
     // Check if our sample is already loaded first.  If so, just duplicate it!
 
-    if(serm=CurCache.sample->Fetch(si))
-        unisample_duplicate(serm);
-    else
+    //2020 - DONT USE THIS, unisample api is missing
+    //if(serm=CurCache.sample->Fetch(si))
+    //    unisample_duplicate(serm);
+    //else
     {   serm = WAV_LoadFN(md, si);
         CurCache.sample         = new SampleCacheEntry(CurCache.sample, si);
         CurCache.sample->handle = serm;
@@ -415,17 +418,18 @@ SAMPLE *CacheSample(const char *si)
 
 void FreeAllSamples(void)
 {
-    SampleCacheEntry *cruise;
+  exit(0); //2020 - DONT USE THIS, unisample api is missing
+    //SampleCacheEntry *cruise;
   	
-    if (!UseSound) return;
+    //if (!UseSound) return;
 
-    cruise = CurCache.sample;
-    while(cruise)
-    {   SampleCacheEntry  *tmp = cruise->Next();
-        unisample_free(cruise->handle);
-        delete cruise;
-        cruise = tmp;
-    }
+    //cruise = CurCache.sample;
+    //while(cruise)
+    //{   SampleCacheEntry  *tmp = cruise->Next();
+    //    unisample_free(cruise->handle);
+    //    delete cruise;
+    //    cruise = tmp;
+    //}
 
 }
 

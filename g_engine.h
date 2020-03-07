@@ -105,7 +105,7 @@ extern byte menuptr[256],itmptr[576],charptr[960],*speech;
 void allocbuffers();
 void addcharacter(int i);
 void LoadCHRList();
-void load_map(char *fname);
+void load_map(const char *fname);
 void process_stepzone();
 void lastmove(char n);
 void startfollow();
@@ -119,8 +119,8 @@ void check_tileanimation();
 void UpdateEquipStats();
 void game_ai();
 void CreateSaveImage(byte *buf);
-void SaveGame(char *fn);
-void startmap(char *fname);
+void SaveGame(const char *fn);
+void startmap(const char *fname);
 
 /************** Entities **************/
 

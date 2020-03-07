@@ -59,7 +59,7 @@ void vstrlwr(char *c)
    }
 }
 
-int vstrcmp(char *s1, char *s2)
+int vstrcmp(const char *s1, const char *s2)
 {
    while (1)
    {
@@ -73,7 +73,7 @@ int vstrcmp(char *s1, char *s2)
    return -1;
 }
  
-int vstrcasecmp(char *s1, char *s2)
+int vstrcasecmp(const char *s1, const char *s2)
 {
    while (1)
    {
@@ -87,7 +87,7 @@ int vstrcasecmp(char *s1, char *s2)
    return -1;
 }
 
-int vstricmp(char *s1, char *s2)
+int vstricmp(const char *s1, const char *s2)
 {
 	while (1)
 	{
@@ -117,7 +117,7 @@ void vmemset(void *dest, int fill, int count)
          ((char *) dest)[i] = fill;
 }
 
-void vmemcpy(void *dest, void *src, int count)
+void vmemcpy(void *dest, const void *src, int count)
 {
    int i;
 
@@ -132,7 +132,7 @@ void vmemcpy(void *dest, void *src, int count)
          ((char *) dest)[i] = ((char *) src)[i];
 }
 
-int vmemcmp(void *m1, void *m2, int count)
+int vmemcmp(const void *m1, const void *m2, int count)
 {
    while (count)
    {
@@ -143,14 +143,14 @@ int vmemcmp(void *m1, void *m2, int count)
    return 0;
 }
 
-void vstrcpy(char *dest, char *src)
+void vstrcpy(char *dest, const char *src)
 {
    while (*src)
       *dest++ = *src++;
    *dest++ = 0;
 }
 
-void vstrncpy(char *dest, char *src, int n)
+void vstrncpy(char *dest, const char *src, int n)
 {
    n--;
    while (*src && n)
