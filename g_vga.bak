@@ -1,0 +1,616 @@
+/********************************************************** 
+   g_vga.cpp
+   winverge
+   Copyright (C) 2000 Benjamin Eirich (vecna)
+   All Rights Reserved
+ **********************************************************/
+
+#include "ddraw.h"
+#include "pcp.h"
+
+/************************** data **************************/
+
+byte *scr;
+byte pal[768], pal2[768];
+PALETTEENTRY ddpal[256];
+
+int x1=17, y1=17;
+
+/*****************************************************************/
+
+LPDIRECTDRAW dd;
+LPDIRECTDRAWSURFACE ps, bs;
+DDSURFACEDESC psd, bsd;
+LPDIRECTDRAWPALETTE dp;
+
+/************************** code **************************/
+
+/* Base graphics library stuff */
+
+void CloseVGA()
+{
+	dp -> Release();
+	bs -> Release();
+	ps -> Release();
+	dd -> Release();
+	ShowCursor(1);
+}
+
+void InitVGA()
+{
+	HRESULT hr;
+	//DDPIXELFORMAT ddpf;
+	int i=0;
+	
+	vmemset(ddpal,0,sizeof(PALETTEENTRY)*256);
+
+	ShowCursor(0);
+	hr = DirectDrawCreate(NULL,&dd,NULL);
+	hr = dd -> SetCooperativeLevel(hMainWnd,DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
+	dd -> SetDisplayMode(320, 200, 8);
+	hr = dd->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256,ddpal,&dp,NULL);
+	dp->SetEntries(0,0,256,ddpal);	
+	vmemset(&psd, 0, sizeof (DDSURFACEDESC));
+	vmemset(&bsd, 0, sizeof (DDSURFACEDESC));
+	psd.dwSize = sizeof (DDSURFACEDESC);
+	psd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+	psd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX | DDSCAPS_SYSTEMMEMORY;
+	psd.dwBackBufferCount = 1;
+	dd -> CreateSurface(&psd, &ps, 0);
+	ps->SetPalette(dp);
+	bsd.dwSize = sizeof (DDSURFACEDESC);
+	bsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
+	ps -> GetAttachedSurface(&bsd.ddsCaps, &bs);
+	bs -> Lock(0, &bsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, 0);
+	scr = (byte *) bsd.lpSurface;
+	atexit(CloseVGA);
+}
+
+void vgadump()
+{
+	HRESULT hr;
+	
+	hr=ps->Flip(0,DDFLIP_NOVSYNC);
+	if(hr!=DD_OK)
+	{
+		if(hr==DDERR_SURFACELOST)
+		{
+			hr=ps->Restore();
+			if(hr!=DD_OK)
+			{
+				Foreground=0;
+				return;
+			}
+		}
+	}
+	if(hr!=DD_OK)
+	{
+		Foreground=0;
+		return;
+	}
+	bs->Lock(0, &bsd, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, 0);
+	if(hr!=DD_OK)
+	{
+		if(hr==DDERR_SURFACELOST)
+		{
+			hr=bs->Restore();
+			if(hr!=DD_OK)
+			{
+				Foreground=0;
+				return;
+			}
+		}
+	}
+	if(hr!=DD_OK)
+	{
+		Foreground=0;
+		return;
+	}
+	Foreground=1;
+	scr = (byte *) bsd.lpSurface;
+	bs->Unlock(0);
+}
+
+/* Palette-handling routines */
+
+void ConvPal(byte *p)
+{
+	for (int i=0; i<256; i++)
+	{
+		ddpal[i].peRed   = p[(i*3)+0] * 4;
+		ddpal[i].peGreen = p[(i*3)+1] * 4;
+		ddpal[i].peBlue  = p[(i*3)+2] * 4;
+	}
+}
+
+void SetPalette(byte *p)
+{ 
+	ConvPal(p);
+	dp->SetEntries(0,0,256,ddpal);
+}
+
+void GetPalette()
+{
+	for (int i=0; i<256; i++)
+	{
+		pal[(i*3)+0] = ddpal[i].peRed / 4;
+		pal[(i*3)+1] = ddpal[i].peGreen / 4;
+		pal[(i*3)+2] = ddpal[i].peBlue / 4;
+	}	
+}
+
+void SetIntensity(int n)
+{
+	int i;
+    
+	for (i=767; i>=0; --i)
+      pal2[i] = (pal[i] * n) >> 6;
+    SetPalette(pal2);
+}
+
+/* Graphics primitives */
+
+#define cx1 0
+#define cx2 319
+#define cy1 0
+#define cy2 199
+
+void SetPixel(int x, int y, byte c)
+{
+	if (!Foreground) return;
+	if (x<cx1 || x>cx2 || y<cy1 || y>cy2)
+		return;
+	scr[(y * bsd.lPitch) + x] = c;
+}
+
+void VLine(int x, int y, int y2, byte c)
+{
+	for (int i=0; i<(y2-y); i++)
+		SetPixel(x,(y+i),c);
+}
+
+void HLine(int x, int y, int x2, byte c)
+{
+	byte *d = scr;
+
+	if (!Foreground) return;
+	if (x2<x) SWAP(x,x2);
+	if (x>cx2 || y>cy2 || x2<cx1 || y<cy1)
+		return;
+
+	if (x2>cx2) x2=cx2;
+	if (x<cx1)  x =cx1;
+
+	d += (y * bsd.lPitch) + x;
+	for (; x<=x2; x++)
+		*d++ = c;
+}
+
+void Box(int x, int y, int x2, int y2, byte color)
+{
+	if (x2<x) SWAP(x,x2);
+	if (y2<y) SWAP(y,y2);
+
+	for (int i=0; i<=(y2-y); i++)
+		{ HLine(x,(y+i),x2+1,color); }
+}
+
+void CopyTile(int x, int y, byte *spr)
+{
+	byte *s=(byte *) spr,
+		 *d=(byte *) scr;
+	int spitch=16,
+		dpitch=bsd.lPitch;
+	int xlen = 16, ylen = 16;
+
+	if(!Foreground) return;
+	if (x>cx2 || y>cy2 || x+16<cx1 || y+16<cy1)
+		return;
+
+	if (x+xlen > cx2) xlen=cx2-x+1;
+	if (y+ylen > cy2) ylen=cy2-y+1;
+	if (x<cx1)
+	{
+		s += (cx1-x);
+		xlen -= (cx1-x);
+		x = cx1;
+	}
+	if (y<cy1)
+	{
+		s += (cy1-y) * spitch;
+		ylen -= (cy1-y);
+		y = cy1;
+	}
+
+	d += (y * dpitch) + x;
+	for (; ylen--; s += spitch, d+= dpitch)
+    	memcpy(d, s, xlen);
+}
+
+void TCopyTile(int x, int y, byte *spr)
+{
+	byte *s=(byte *) spr,
+		 *d=(byte *) scr, c;
+	int spitch=16,
+		dpitch=bsd.lPitch;
+	int xlen = 16, ylen = 16;
+
+	if(!Foreground) return;
+	if (x>cx2 || y>cy2 || x+16<cx1 || y+16<cy1)
+		return;
+
+	if (x+xlen > cx2) xlen=cx2-x+1;
+	if (y+ylen > cy2) ylen=cy2-y+1;
+	if (x<cx1)
+	{
+		s += (cx1-x);
+		xlen -= (cx1-x);
+		x = cx1;
+	}
+	if (y<cy1)
+	{
+		s += (cy1-y) * spitch;
+		ylen -= (cy1-y);
+		y = cy1;
+	}
+	d += (y * dpitch) + x;
+	for (; ylen; ylen--)
+	{
+		for (x=0; x<xlen; x++)
+		{
+			c = s[x];
+			if (!c) d[x] = c;
+		}
+		s += spitch;
+		d += dpitch;
+	}
+}
+
+void CopySprite(int x, int y, int w, int h, byte *src)
+{
+	byte *s=(byte *) src,
+		 *d=(byte *) scr;
+	int spitch=w,
+		dpitch=bsd.lPitch;
+	int xlen=w,
+		ylen=h;
+	
+	if(!Foreground) return;
+	if (x>cx2 || y>cy2 || x+xlen<cx1 || y+ylen<cy1)
+		return;
+	if (x+xlen > cx2) xlen=cx2-x+1;
+	if (y+ylen > cy2) ylen=cy2-y+1;
+	if (x<cx1)
+	{
+		s += (cx1-x);
+		xlen -= (cx1-x);
+		x = cx1;
+	}
+	if (y<cy1)
+	{
+		s += (cy1-y)*spitch;
+		ylen -= (cy1-y);
+		y = cy1;
+	}
+
+	d += (y*dpitch)+x;
+	for (; ylen--; s+=spitch,d+=dpitch)
+    	memcpy(d, s, xlen);
+}
+
+void TCopySprite(int x, int y, int w, int h, byte *src)
+{
+	byte *s=(byte *) src,
+		 *d=(byte *) scr, c;
+	int spitch=w,
+		dpitch=bsd.lPitch;
+	int xlen=w,
+		ylen=h;
+	
+	if(!Foreground) return;
+	if (x>cx2 || y>cy2 || x+xlen<cx1 || y+ylen<cy1)
+		return;
+	if (x+xlen > cx2) xlen=cx2-x+1;
+	if (y+ylen > cy2) ylen=cy2-y+1;
+	if (x<cx1)
+	{
+		s += (cx1-x);
+		xlen -= (cx1-x);
+		x = cx1;
+	}
+	if (y<cy1)
+	{
+		s += (cy1-y)*spitch;
+		ylen -= (cy1-y);
+		y = cy1;
+	}
+
+	d += (y * dpitch) + x;	
+	for (; ylen; ylen--)
+	{
+		for (x=0; x<xlen; x++)
+		{
+			c = s[x];
+			if (!c) d[x] = c;
+		}
+		s += spitch;
+		d += dpitch;
+	}
+}
+
+/* Tranparency stuff */
+
+byte vergepal[768];          // VERGE main palette
+byte menuxlatbl[256];        // Menu transparencyfield (blue)
+byte greyxlatbl[256];        // Grey transparencyfield
+byte scrnxlatbl[256];        // screen transparencyfield
+byte *transparencytbl;       // full transparency table (64k)
+
+void ColorScale(byte *dest,int st,int fn,int inv)
+{
+	int i, intensity;
+
+	for (i=0; i<256; i++)
+	{
+		intensity=vergepal[(i*3)];
+		intensity+=vergepal[(i*3)+1];
+		intensity+=vergepal[(i*3)+2];
+		intensity=intensity*(fn-st)/192;
+		if (inv) dest[i]=fn-intensity;
+		else dest[i]=st+intensity;
+	}
+}
+
+void PreCalc_TransparencyFields()
+{
+	FILE *f;
+
+	// First read the VERGE palette from verge.pal
+
+	f=fopen("VERGE.PAL","rb");
+	if (!f) err("Egad! Where's your VERGE.PAL, pal?");
+	fread(vergepal, 1, 768, f);
+	fclose(f);
+	SetPalette(vergepal);
+	GetPalette();
+	transparencytbl = new byte[65536];
+
+	// Precompute some common translation tables.
+
+	ColorScale(menuxlatbl, 141, 159, 1);
+	ColorScale(greyxlatbl, 0, 31, 0);
+
+	// Load in the 64k bitmap-on-bitmap transparency table (precomputed)
+
+	f=fopen("TRANS.TBL","rb");
+	fread(transparencytbl, 1, 65535, f);
+	fclose(f);
+}
+/*
+ColorField(int x1, int y1, int x2, int y2, unsigned char *colortbl)
+{ int j,i;
+  unsigned char c;
+
+  for (j=y1; j<y2; j++)
+      for (i=x1; i<x2; i++)
+          { c=virscr[(j*352)+i];
+            virscr[(j*352)+i]=colortbl[c];
+          }
+}
+
+ColorField(int x, int y, int x2, int y2, unsigned char *tbl)
+{
+ asm( "movl %3, %%edx                   \n\t"
+      "subl %1, %%edx                   \n\t"   // get height
+      "movl %4, %%esi                   \n\t"
+"acf0:                                  \n\t"
+      "movl %1, %%edi                   \n\t"
+      "imul $352, %%edi                 \n\t"
+      "addl %0, %%edi                   \n\t"
+      "addl _virscr, %%edi              \n\t"
+      "movl %2, %%ecx                   \n\t"
+      "subl %0, %%ecx                   \n\t"  // get width
+"acf1:                                  \n\t"
+      "movl $0, %%eax                   \n\t"
+      "movb (%%edi), %%al               \n\t"
+      "addl %%esi, %%eax                \n\t"
+      "movb (%%eax), %%bl               \n\t"
+      "movb %%bl, (%%edi)               \n\t"
+      "incl %%edi                       \n\t"
+      "decl %%ecx                       \n\t"
+      "jnz acf1                         \n\t"
+      "incl %1                          \n\t"
+      "decl %%edx                       \n\t"
+      "jnz acf0                         \n\t"
+      :
+      : "m" (x), "m" (y), "m" (x2), "m" (y2), "m" (tbl)
+      : "eax","ebx","ecx","edx","esi","edi","cc" );
+}
+*/
+/*Tcopysprite(int x1, int y1, int width, int height, unsigned char *src)
+{ unsigned int j,i,jz,iz;
+  unsigned char c,d;
+
+  for (j=0; j<height; j++)
+      for (i=0; i<width; i++)
+          { jz=j+y1;
+            iz=i+x1;
+            c=virscr[(jz*352)+iz];
+            d=src[(j*width)+i];
+            if (d) virscr[(jz*352)+iz]=transparencytbl[(d*256)+c];
+          }
+}
+
+_Tcopysprite(int x1, int y1, int width, int height, unsigned char *src)
+{ unsigned int j,i,jz,iz;
+  unsigned char c,d;
+
+  for (j=0; j<height; j++)
+      for (i=0; i<width; i++)
+          { jz=j+y1;
+            iz=i+x1;
+            c=virscr[(jz*352)+iz];
+            d=src[(j*width)+i];
+            if (d) virscr[(jz*352)+iz]=transparencytbl[(c*256)+d];
+          }
+
+*/
+
+/* Font routines */
+
+byte TextColor=31;
+byte *fnt, *fnt2, *tbox;
+
+void LoadFont()
+{
+	FILE *f;
+
+	fnt = new byte[6000];
+	fnt2 = new byte[14000];
+	tbox = new byte[30000];
+
+	/* Load small font */
+	if (!(f = fopen("SMALL.FNT","rb")))
+		err("FATAL ERROR: Could not open SMALL.FNT");
+	fread(fnt, 63, 95, f);
+	fclose(f);
+
+	/* Load large text font */
+	if (!(f = fopen("MAIN.FNT","rb")))
+		err("FATAL ERROR: Could not open MAIN.FNT");
+	fread(fnt2, 144, 95, f);
+	fclose(f);
+
+	/* Load text box */
+	if (!(f = fopen("BOX.RAW","rb")))
+		err("FATAL ERROR: Could not open BOX.RAW");
+	fread(tbox, 320, 66, f);
+	fclose(f);
+}
+
+void pchar(int x, int y, char c)
+{
+	byte *img;
+
+	if (c<32 || c>126) return;
+	img = fnt + ((c - 32) * 63);
+	if (c==103 || c==106 || c==112 || c==113 || c==121)
+		TCopySprite(x, y+2, 7, 9, img);
+	else
+		TCopySprite(x, y, 7, 9, img);
+}
+
+void VCpchar(int x, int y, char c)
+{ 
+/*	byte *img;
+
+	if ((c<32) || (c>126)) return;
+	img=fnt+((c-32)*63);
+	if ((c==103) || (c==106) || (c==112) || (c==113) || (c==121))
+		VCtcopysprite(x,y+2,7,9,img);
+	else
+		VCtcopysprite(x,y,7,9,img); */
+}
+
+void bigpchar(int x, int y, char c)
+{
+	byte *img;
+
+	if ((c<32) || (c>126)) return;
+	img = fnt2 + ((c - 32) * 144);
+	if ((c==103) || (c==106) || (c==112) || (c==113) || (c==121))
+		TCopySprite(x, y+2, 9, 16, img);
+	else
+		TCopySprite(x, y, 9, 16, img);
+}
+
+void gotoxy(int x, int y)
+{
+	x1=x;
+	y1=y;
+}
+
+void printstring(char *str)
+{
+	int i = 0;
+	char c;
+
+	if (!str[0]) return;
+	while (1)
+	{
+		c = str[i];
+		pchar(x1, y1, c);
+		x1 += 8;
+		i++;
+		if (!str[i]) return;
+	}
+}
+/*
+VCprintstring(int xx, int yy, char *str)
+{ int i;
+  char c;
+
+  i=0;
+  if (!str[0]) return;
+
+mainloop:
+  c=str[i];
+  VCpchar(xx,yy,c);
+  xx=xx+8;
+  i++;
+  if (str[i]!=0) goto mainloop;
+}
+*/
+
+void bigprintstring(char *str)
+{
+	int i=0;
+	char c;
+
+	if (!str[0]) return;
+	while (1)
+	{
+		c = str[i];
+		bigpchar(x1,y1,c);
+		x1 += 10;
+		i++;
+		if (!str[i]) return;
+	}
+}
+
+// Sub 16 from all hardcoded coords? or just include such things in all primitives?
+
+void putbox()
+{
+//  ColorField(18,151,334,213,&menuxlatbl);
+//  TCopySprite(16,149,320,66,tbox);
+}
+
+void dec_to_asciiz(int num, char *buf)
+{
+	sprintf(buf, "%d", num);
+}
+
+void textwindow(char portrait, char *str1, char *str2, char *str3)
+{
+//	TCopySprite(20,114,32,32,speech+(portrait*1024));
+//	putbox();
+//	gotoxy(25,155);
+//	bigprintstring(str1);
+//	gotoxy(25,174);
+//	bigprintstring(str2);
+//	gotoxy(25,193);
+//	bigprintstring(str3);
+}
+
+void fontcolor(byte c)
+{
+	byte *ptr = fnt;
+	for (int i=0; i<5985; i++)
+    {
+		if (*ptr == TextColor)
+			*ptr = c;
+        ptr++;
+	}
+  TextColor = c;
+}

@@ -1,0 +1,33 @@
+extern char drawparty,cameratracking;
+extern char drawentities;
+extern char layer0,layer1,layervc,layervc2;
+extern char layervcwrite;
+extern byte *vcscreen,hookretrace,*vcscreen2,*vcscreen1;
+extern char flipped[2048];
+extern int tileidx[2048];
+extern int foregroundlock,xwin1,ywin1;
+extern byte draworder[100],numdraw;
+extern byte layer1trans, layervctrans, layervc2trans;
+
+extern int quake,quakex,quakey,qswitch;
+extern int screengradient;
+
+void InitRenderSystem();
+void drawchar(int i, int xw, int yw);
+void SwitchOrder(int i, int j);
+void SortDrawOrder();
+void setdrawchar(unsigned char i);
+void drawchars(int xw, int yw);
+void drawcharacters(int xw,int yw);
+void ProcessEarthQuake();
+void drawvclayer();
+void drawvclayer2();
+void drawmap();
+void drawmaploc(int xw, int yw);
+void DrawLayer0(int xw, int yw);
+void DrawLayer1Trans(int xw, int yw);
+void _DrawLayer1Trans(int xw, int yw);
+void DrawLayer1(int xw, int yw);
+int random(int lo, int hi);
+void AnimateTile(char i, int l);
+void animate(char i);

@@ -1,0 +1,51 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: winverge - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP7B.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/winverge.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\winverge\g_vclib.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP7B.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP7C.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ddraw.lib dxguid.lib winmm.lib dinput.lib mikmod.lib dsound.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/winverge.pdb" /debug /machine:I386 /out:"Debug/winverge.exe" /pdbtype:sept 
+.\Debug\a_err.obj
+.\Debug\a_string.obj
+.\Debug\g_engine.obj
+.\Debug\g_menu.obj
+.\Debug\g_pcx.obj
+.\Debug\g_render.obj
+.\Debug\g_vc.obj
+.\Debug\g_vclib.obj
+.\Debug\g_vga.obj
+.\Debug\w_dinput.obj
+.\Debug\w_main.obj
+.\Debug\w_timer.obj
+.\Debug\w_sound.obj
+.\Debug\a_cache.obj
+.\resample.obj
+.\res16ss.obj
+.\res8ss.obj
+.\res16.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP7C.tmp"
+<h3>Output Window</h3>
+Compiling...
+g_vclib.cpp
+C:\winverge\g_vclib.cpp(1815) : warning C4101: 'i' : unreferenced local variable
+C:\winverge\g_vclib.cpp(1815) : warning C4101: 'l' : unreferenced local variable
+Linking...
+
+
+
+<h3>Results</h3>
+winverge.exe - 0 error(s), 2 warning(s)
+</pre>
+</body>
+</html>
