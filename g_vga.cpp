@@ -10,7 +10,7 @@
 
 /************************** data **************************/
 
-byte *scr;
+byte *scr, *scr_last_hicolor;
 byte *scr_surf;
 const int scr_size = 320*200*8;
 const int scr_w	   = 320;
@@ -41,48 +41,74 @@ void CloseVGA()
 	ShowCursor(1);
 }
 
+extern HWND hMainWnd;
+
+
 void InitVGA()
 {
 	HRESULT hr;
 	
-	vmemset(ddpal,0,sizeof(PALETTEENTRY)*256);
-	ShowCursor(0);
-	hr = DirectDrawCreate(NULL,&dd,NULL);
-	hr = dd -> SetCooperativeLevel(hMainWnd,DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
-	dd -> SetDisplayMode(320, 200, 8);
-	hr = dd->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256,ddpal,&dp,NULL);
-	dp->SetEntries(0,0,256,ddpal);	
-	vmemset(&psd, 0, sizeof (DDSURFACEDESC));
-	vmemset(&bsd, 0, sizeof (DDSURFACEDESC));
-	psd.dwSize = sizeof (DDSURFACEDESC);
-	psd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
-	psd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX | DDSCAPS_SYSTEMMEMORY;
-	psd.dwBackBufferCount = 1;
-	dd -> CreateSurface(&psd, &ps, 0);
-	ps->SetPalette(dp);
-	bsd.dwSize = sizeof (DDSURFACEDESC);
-	bsd.dwFlags = DDSD_CAPS;
-	bsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
-	ps -> GetAttachedSurface(&bsd.ddsCaps, &bs);
+	//vmemset(ddpal,0,sizeof(PALETTEENTRY)*256);
+	//ShowCursor(0);
+	//hr = DirectDrawCreate(NULL,&dd,NULL);
+	//hr = dd -> SetCooperativeLevel(hMainWnd,DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN);
+	//dd -> SetDisplayMode(320, 200, 8);
+	//hr = dd->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256,ddpal,&dp,NULL);
+	//dp->SetEntries(0,0,256,ddpal);	
+	//vmemset(&psd, 0, sizeof (DDSURFACEDESC));
+	//vmemset(&bsd, 0, sizeof (DDSURFACEDESC));
+	//psd.dwSize = sizeof (DDSURFACEDESC);
+	//psd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
+	//psd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX | DDSCAPS_SYSTEMMEMORY;
+	//psd.dwBackBufferCount = 1;
+	//dd -> CreateSurface(&psd, &ps, 0);
+	//ps->SetPalette(dp);
+	//bsd.dwSize = sizeof (DDSURFACEDESC);
+	//bsd.dwFlags = DDSD_CAPS;
+	//bsd.ddsCaps.dwCaps = DDSCAPS_BACKBUFFER;
+	//ps -> GetAttachedSurface(&bsd.ddsCaps, &bs);
 	scr = new byte[scr_size];
 	memset(scr,0,scr_size);
-	atexit(CloseVGA);
+
+	scr_last_hicolor = new byte[scr_size*4];
+	memset(scr_last_hicolor,0,scr_size*4);
+
+	//atexit(CloseVGA);
+
+	//this is needed for proper windowsappsiness, due to verge not drawing every frame (for instance, static screens won't be calling vgadump)
+	SetTimer(hMainWnd,0,1000/60,nullptr);
 }
 
 void vgadump()
 {
 	int i;
 
-	//lock surface to get memory pointer
-	bs->Lock(NULL,&bsd,DDLOCK_WAIT|DDLOCK_SURFACEMEMORYPTR,NULL);
-	scr_surf=(byte*)bsd.lpSurface;
-	
-	//fill surface memory with system mem framebuffer
-	for(i=0;i<scr_h;i++)
-		memcpy(scr_surf+(bsd.lPitch*i),scr+(scr_w*i),scr_w);
+	byte* dst = scr_last_hicolor;
+	for(int i=0;i<320*200;i++)
+	{
+		byte p = scr[i];
+		*dst++ = ddpal[p].peBlue;
+		*dst++ = ddpal[p].peGreen;
+		*dst++ = ddpal[p].peRed;
+		*dst++ = 0;
+	}
 
-	bs->Unlock(NULL);	
-	ps->Flip(0,DDFLIP_NOVSYNC);
+	RECT r;
+	GetClientRect(hMainWnd, &r);
+	InvalidateRect(hMainWnd, &r, FALSE);
+	UpdateWindow(hMainWnd);
+	
+
+	////lock surface to get memory pointer
+	//bs->Lock(NULL,&bsd,DDLOCK_WAIT|DDLOCK_SURFACEMEMORYPTR,NULL);
+	//scr_surf=(byte*)bsd.lpSurface;
+	//
+	////fill surface memory with system mem framebuffer
+	//for(i=0;i<scr_h;i++)
+	//	memcpy(scr_surf+(bsd.lPitch*i),scr+(scr_w*i),scr_w);
+
+	//bs->Unlock(NULL);	
+	//ps->Flip(0,DDFLIP_NOVSYNC);
 }
 
 /* Palette-handling routines */
@@ -102,7 +128,7 @@ void ConvPal(byte *p)
 void SetPalette(byte *p)
 { 
 	ConvPal(p);
-	dp->SetEntries(0,0,256,ddpal);
+	vgadump();
 }
 
 void GetPalette()

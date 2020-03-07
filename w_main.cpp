@@ -315,7 +315,11 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE zwhocares, LPSTR isuredon
 	WndClass.hInstance=hMainInst;
 	WndClass.lpfnWndProc=WndProc;
 	RegisterClass(&WndClass);
-	hMainWnd=CreateWindowEx((int) NULL,"verge main window type","verge",WS_POPUP,0,0,GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN),NULL,NULL,hMainInst,NULL);
+	RECT r = {0,0,320,200};
+	AdjustWindowRect(&r,WS_OVERLAPPEDWINDOW,FALSE);
+	char tmp[200];
+	sprintf(tmp, "winverge 2020 msvc %d", _MSC_VER);
+	hMainWnd=CreateWindowEx((int) NULL,"verge main window type",tmp,WS_OVERLAPPEDWINDOW | WS_VISIBLE,0,0,r.right-r.left,r.bottom-r.top,NULL,NULL,hMainInst,NULL);
 	ShowWindow(hMainWnd,SW_NORMAL);
 	UpdateWindow(hMainWnd);
 	hSubMenu=GetSubMenu(hMenu,0);
@@ -378,28 +382,74 @@ void HandleMessages(void)
 		}
 	}
 }
-
+extern byte *scr_last_hicolor;
 LRESULT APIENTRY WndProc(HWND hWnd, UINT message,WPARAM wParam, LPARAM lParam)
 {
-	
-	if (message==WM_ACTIVATE)
+	switch(message)
 	{
-		if(LOWORD(wParam)==WA_INACTIVE)
-		{
-			Foreground=0;
-		}
-		else Foreground=1;
+		case WM_ACTIVATE:
+			if(LOWORD(wParam) == WA_INACTIVE)
+			{
+				Foreground = 0;
+			}
+			else Foreground = 1;
+			break;
+		case WM_ACTIVATEAPP:
+			if((BOOL)wParam == 0)
+			{
+				Foreground = 0;
+			}
+			else Foreground = 1;
+			break;
+
+		case WM_TIMER:
+			{
+				RECT r;
+				GetClientRect(hMainWnd, &r);
+				InvalidateRect(hMainWnd, &r, FALSE);
+				UpdateWindow(hMainWnd);
+				break;
+			}
+
+		case WM_PAINT:
+			{
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hMainWnd, &ps);
+
+				BITMAPINFO bmi;
+				memset(&bmi, 0, sizeof(bmi));
+
+				bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+				bmi.bmiHeader.biWidth = 320;
+				bmi.bmiHeader.biHeight = -200;
+				bmi.bmiHeader.biPlanes = 1;
+				bmi.bmiHeader.biBitCount = 32;
+				bmi.bmiHeader.biCompression = BI_RGB;
+
+				
+				LPBYTE pBits;
+				HBITMAP hbm = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS,(void **)&pBits, NULL, 0);
+
+				if(scr_last_hicolor)
+					memcpy(pBits,scr_last_hicolor,320*200*4);
+				
+				HDC hdcMem = CreateCompatibleDC(hdc);
+				HGDIOBJ hbmOld = SelectObject(hdcMem, (HGDIOBJ)hbm);
+				BitBlt(hdc,0,0,320,200,hdcMem,0,0,SRCCOPY);
+				DeleteObject(hbmOld);
+				DeleteObject(hdcMem);
+				DeleteObject(hbm);
+
+				EndPaint(hMainWnd, &ps);
+				break;
+			}
+
+		case WM_CLOSE:
+			err("");
+			break;
+		default:
+			break;
 	}
-	if (message==WM_ACTIVATEAPP)
-	{
-		if((BOOL)wParam==0)
-		{
-			Foreground=0;
-		}
-		else Foreground=1;
-	}
-	if (message==WM_CLOSE)
-		err("");
 
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
