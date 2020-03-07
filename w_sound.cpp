@@ -2,7 +2,8 @@
 #include "pcp.h"
 #include "mikmod.h"
 #include "mplayer.h"
-#include "unisamp.h"
+
+#include "mwav.h"
 
 
 class SongCacheEntry:public CacheEntry
@@ -408,7 +409,7 @@ SAMPLE *CacheSample(const char *si)
     //if(serm=CurCache.sample->Fetch(si))
     //    unisample_duplicate(serm);
     //else
-    {   serm = WAV_LoadFN(md, si);
+    {   serm = WAV_LoadFN(si);
         CurCache.sample         = new SampleCacheEntry(CurCache.sample, si);
         CurCache.sample->handle = serm;
     }
