@@ -1,3 +1,4 @@
 /.vs/winverge/v16/*.suo
 /Debug
 /winverge.vcxproj.user
+/Release
