@@ -61,6 +61,7 @@
     <ClInclude Include="mikmod2002\mikmod\src\virtch\resfilter\resshare.h">
       <Filter>mikmod2002\mikmod\src\virtch\resfilter</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="a_cache.cpp" />
@@ -249,5 +250,11 @@
     <None Include="mikmod2002\mikmod\src\virtch\resample.S">
       <Filter>mikmod2002\mikmod\src\virtch</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="winverge2020.ico" />
   </ItemGroup>
 </Project>

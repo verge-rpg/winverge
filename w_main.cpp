@@ -2,6 +2,8 @@
 #define _WIN32_WINNT 0x0500
 #include "pcp.h"
 
+#include "resource.h"
+
 /*
  fixed saveload window (which is a total piece-of-shit-code),
  fix ForceEquip and 
@@ -310,7 +312,7 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE zwhocares, LPSTR isuredon
 	hMainInst=hCurrentInst;
 	vmemset(&WndClass,0,sizeof(WNDCLASS));
 	WndClass.hCursor=LoadCursor(0, IDC_ARROW);
-	WndClass.hIcon=LoadIcon(NULL, MAKEINTRESOURCE(IDI_APPLICATION));
+	WndClass.hIcon=LoadIcon(hCurrentInst, MAKEINTRESOURCE(IDI_ICON1));
 	WndClass.lpszClassName="verge main window type";
 	WndClass.hInstance=hMainInst;
 	WndClass.lpfnWndProc=WndProc;

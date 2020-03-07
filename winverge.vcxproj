@@ -170,6 +170,7 @@
     <ClInclude Include="mikmod2002\mmio\include\mminline.h" />
     <ClInclude Include="mikmod2002\mmio\include\mmio.h" />
     <ClInclude Include="mikmod2002\mmio\include\mmtypes.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="uniform.h" />
     <ClInclude Include="unisamp.h" />
     <ClInclude Include="w_main.h" />
@@ -236,6 +237,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mikmod2002\mikmod\src\virtch\resample.S" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="winverge2020.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
