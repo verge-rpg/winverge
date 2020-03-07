@@ -17,6 +17,8 @@ void s_setglobalvolume(int);
 void s_setmusicvolume(int);
 void s_setsndfxvolume(int);
 
+void playeffect(int efc);
+
 void UpdateSound(void);
 
 //extern bool music;

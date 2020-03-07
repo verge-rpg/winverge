@@ -148,7 +148,7 @@ void SoundEffect()
 	char c;
 
 	c=ResolveOperand();
-  //playeffect(c-1);
+  playeffect(c-1);
 }
 
 void GiveItem()
@@ -498,7 +498,7 @@ drawloop:
 	if (up || down) 
 	{ 
 		selptr=selptr^1;
-//        playeffect(0);
+        playeffect(0);
         first=1; 
 	}
 
@@ -866,7 +866,7 @@ void Shop()
 	int first=1,nv,p;
 
 	// Egad.
-//	playeffect(1); an=1;
+	playeffect(1); an=1;
 	nv=GrabC();
 	memset(&storeinv,0,12);
 	for (p=0; p<nv; p++)
@@ -888,7 +888,7 @@ drawloop:
 	if (down || up)
 	{
 		p=p^1;
-//		playeffect(0);
+		playeffect(0);
 		first=1;
 	}
 

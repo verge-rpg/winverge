@@ -279,14 +279,14 @@ inputloop:
 	ReadControls();
 	if (down) { cursel++;
                 if (cursel==3) cursel=0;
-//                playeffect(0);
-//                playeffect(0);
+                playeffect(0);
+                playeffect(0);
                 goto drawloop;
 	}
 	if (up) { if (!cursel) cursel=2;
 		      else cursel--;
-//              playeffect(0);
-//              playeffect(0);
+              playeffect(0);
+              playeffect(0);
               goto drawloop; }
 
 	if (!b1) goto inputloop;

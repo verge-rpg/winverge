@@ -12,8 +12,6 @@
 #define grey2 26
 #define white 31
 
-#define playeffect(a)
-
 char menuactive=1;
 char whoisptr=0, iuflag;
 byte gsimg[2048];

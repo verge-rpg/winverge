@@ -4,7 +4,9 @@
 #include "mplayer.h"
 
 #include "mwav.h"
+#include "mdsfx.h"
 
+#include <vector>
 
 class SongCacheEntry:public CacheEntry
 {
@@ -76,6 +78,9 @@ struct
 } fifo;
 
 static bool Session;
+
+std::vector<MD_SAMPLE*> sfx;
+
 
 
 // ==============================
@@ -177,15 +182,36 @@ void InitSound()
     // - the sound effects are differentiated from the menu system sounds so that we
     //   can preempt all in-game sound effects when the user enters a menu.
 
-    vs_global = Voiceset_Create(md,NULL,0,0);
-    vs_music  = Voiceset_Create(md,vs_global,0,0);
-    vs_sndfx  = Voiceset_Create(md,vs_global,0,0);
-    vs_menu   = Voiceset_Create(md,vs_global,0,0);
+    vs_global = Voiceset_Create(md,NULL,64,0);
+    vs_music  = Voiceset_Create(md,vs_global,64,0);
+    vs_sndfx  = Voiceset_Create(md,vs_global,64,0);
+    vs_menu   = Voiceset_Create(md,vs_global,64,0);
     
     // We should load and set configured volume levels for each class
     // of sound here... (or somewhere)
     
     AddShutdownProc(ShutdownSound,"Music subsystem");
+
+    const char *fname = "MAIN.SFX";
+
+    FILE* f;
+    char i;
+
+    int numfx = 0;
+    if(!(f = fopen(fname, "r"))) err("Could not open sound effect index file.");
+    fscanf(f, "%s", strbuf);
+    numfx = atoi(strbuf);
+
+    for(int i = 0; i < numfx; i++)
+    {
+      fscanf(f, "%s", strbuf);
+      auto tmpsfx = mdsfx_loadwav(md, strbuf);
+      if(!tmpsfx)
+        err("WAV load error.");
+      sfx.push_back(tmpsfx);
+    }
+    fclose(f);
+
 }
 
 void UpdateSound(void)
@@ -301,6 +327,7 @@ void CacheMusic(const char *sng)
     }
 }
 
+
 void PlayMusic(char *sng, bool cache)
 {
 	if (!UseSound) return;
@@ -384,56 +411,6 @@ void FreeAllMusic()
 
 }
 
-
-// =================================
-// *** Sound Effects Interface
-//
-// Because sound effects tend to be used in a far more frequent manner than
-// music, loading the sounds returns a 'sample handle' which is used from
-// that point on to reference the loaded sampledata.  This avoids overuse of
-// a slower string-ID system (based on filename).
-//
-// Sample must *always* be cached if they are to be played.  A sample can be
-// cached at any time using CacheSample.
-// =================================
-
-SAMPLE *CacheSample(const char *si)
-{
-	SAMPLE *serm;
-    
-    if (!UseSound) return NULL;
-    
-    // Check if our sample is already loaded first.  If so, just duplicate it!
-
-    //2020 - DONT USE THIS, unisample api is missing
-    //if(serm=CurCache.sample->Fetch(si))
-    //    unisample_duplicate(serm);
-    //else
-    {   serm = WAV_LoadFN(si);
-        CurCache.sample         = new SampleCacheEntry(CurCache.sample, si);
-        CurCache.sample->handle = serm;
-    }
-	
-    return serm;
-}
-
-void FreeAllSamples(void)
-{
-  exit(0); //2020 - DONT USE THIS, unisample api is missing
-    //SampleCacheEntry *cruise;
-  	
-    //if (!UseSound) return;
-
-    //cruise = CurCache.sample;
-    //while(cruise)
-    //{   SampleCacheEntry  *tmp = cruise->Next();
-    //    unisample_free(cruise->handle);
-    //    delete cruise;
-    //    cruise = tmp;
-    //}
-
-}
-
 int PlaySample(int i, int v, int p)
 // returns the voice the sample has been played in.
 {
@@ -442,6 +419,23 @@ int PlaySample(int i, int v, int p)
 	if (!UseSound) return 0;
 
     return 0;
+}
+
+void playeffect(int efc)
+{ 
+  if (!UseSound) return;
+
+
+  mdsfx_playeffect(sfx[efc], vs_sndfx, 0, 0);
+
+//chanl=md_numchn-curch;
+//if (curch==1) curch=2; else curch=1;
+//
+//MD_VoiceSetVolume(chanl,64);
+//MD_VoiceSetPanning(chanl,128);
+//MD_VoiceSetFrequency(chanl,sfx[efc]->loopend);
+//MD_VoicePlay(chanl,sfx[efc]->handle,0,sfx[efc]->length,0,0,sfx[efc]->flags);
+
 }
 
 

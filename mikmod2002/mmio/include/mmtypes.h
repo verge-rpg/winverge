@@ -96,14 +96,6 @@ typedef unsigned long   ulong;   // must be at least 32 bits!
 #define FALSE 0
 #endif
 
-#ifndef true
-#define true 1
-#endif
-
-#ifndef false
-#define false 0
-#endif
-
 #ifndef DWORD
 typedef unsigned long DWORD;
 #endif
